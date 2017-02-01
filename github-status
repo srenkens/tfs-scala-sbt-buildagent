@@ -1,0 +1,38 @@
+#!/bin/bash
+
+case "$1" in
+        pending)
+            export status="pending"
+            export description="The build had started"
+            ;;
+
+        failure)
+            export status="failure"
+            export description="The build has FAILED"
+            ;;
+
+        success)
+            export status="success"
+            export description="The build succeeded! Time to SMURF!"
+            ;;
+
+        *)
+            echo $"Usage: $0 {pending|failed|success} owner repo"
+            exit 1
+
+esac
+
+
+generate_post_data()
+{
+  cat <<EOF
+{
+  "state": "$1",
+  "target_url": "$2$3/_build/index?buildId=$4",
+  "description": "$description",
+  "context": "TFS"
+}
+EOF
+}
+
+curl -H "Content-Type: application/json" -H "Authorization: token $GITHUB_TOKEN" -X POST --data "$(generate_post_data $1 $SYSTEM_TEAMFOUNDATIONCOLLECTIONURI $SYSTEM_TEAMPROJECT $BUILD_BUILDID)" https://api.github.com/repos/$2/$3/statuses/`git rev-parse --verify HEAD`

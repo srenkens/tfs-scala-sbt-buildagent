@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-# UPDATE
+# The basics (UPDATE, create unprivileged user, install git and other basic stuff)
 RUN useradd --create-home --uid 9001 --shell /bin/bash user && \
     apt-get update && \
     apt-get -y upgrade && \
@@ -26,7 +26,7 @@ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local
 ENV SBT_VERSION=0.13.13
 ENV SCALA_VERSION=2.11.8
 ENV SBT_HOME=/usr/local/sbt
-## Install sbt
+ENV SBT_OPTS="-no-colors"
 RUN \
   curl -L -o sbt-$SBT_VERSION.deb http://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb && \
   dpkg -i sbt-$SBT_VERSION.deb && \
@@ -62,18 +62,26 @@ RUN apt-get install -y x11vnc
 EXPOSE 5900
 
 
+# Docker client
+ADD docker-1.13.0.tgz /opt
+RUN ls /opt/docker && \
+    mv /opt/docker/docker /usr/local/bin/docker
+
 # TFS Agent
 ADD vsts-agent-ubuntu.16.04-x64-2.109.2.tar.gz /myagent
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY run-agent.sh /myagent/run-agent.sh
+COPY github-status /usr/local/bin/github-status
 RUN chmod +x docker-entrypoint.sh && \
     chmod +x /myagent/run-agent.sh && \
+	chmod +x /usr/local/bin/github-status && \
     chown 9001 /myagent
 	
 	
-	
-ENTRYPOINT ["/docker-entrypoint.sh"]
-#RUN chmod 777 /myagent/
+# SSH config - prevents ssh commands from asking for host fingerprint verification - which is not handy when running an automated CI proces
+RUN echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR /app
 CMD ["/bin/bash"]
