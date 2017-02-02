@@ -26,7 +26,7 @@ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local
 ENV SBT_VERSION=0.13.13
 ENV SCALA_VERSION=2.11.8
 ENV SBT_HOME=/usr/local/sbt
-ENV SBT_OPTS="-no-colors"
+ENV SBT_OPTS="-Dno-colors"
 RUN \
   curl -L -o sbt-$SBT_VERSION.deb http://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb && \
   dpkg -i sbt-$SBT_VERSION.deb && \
