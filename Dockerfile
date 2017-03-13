@@ -82,7 +82,7 @@ RUN wget https://github.com/Microsoft/vsts-agent/releases/download/v2.112.0/vsts
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY run-agent.sh /myagent/run-agent.sh
 COPY github-status /usr/local/bin/github-status
-RUN chmod +x docker-entrypoint.sh && \
+RUN chmod +x /docker-entrypoint.sh && \
     chmod +x /myagent/run-agent.sh && \
     chmod +x /usr/local/bin/github-status && \
     chown 9001 /myagent
