@@ -75,7 +75,10 @@ RUN ls /opt/docker && \
     mv /opt/docker/docker /usr/local/bin/docker
 
 # TFS Agent
-ADD vsts-agent-ubuntu.16.04-x64-2.109.2.tar.gz /myagent
+WORKDIR /myagent
+RUN wget https://github.com/Microsoft/vsts-agent/releases/download/v2.112.0/vsts-agent-ubuntu.16.04-x64-2.112.0.tar.gz && \
+    tar -zxvf vsts-agent-ubuntu.16.04-x64-2.112.0.tar.gz && \
+	rm vsts-agent-ubuntu.16.04-x64-2.112.0.tar.gz
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY run-agent.sh /myagent/run-agent.sh
 COPY github-status /usr/local/bin/github-status
