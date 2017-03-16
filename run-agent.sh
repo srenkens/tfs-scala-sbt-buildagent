@@ -12,6 +12,7 @@ x11vnc &
 
 # Configure and Run the TFS Agent
 set +u # Allows unset variables (the env.sh script of the buildagent failes at this part)
+. ./config.sh remove --unattended --url ${TFSURL} --auth PAT --token ${TFSTOKEN} --pool ${TFSPOOL} --agent ${TFSAGENT} | true
 . ./config.sh --unattended --acceptteeeula --replace --url ${TFSURL} --auth PAT --token ${TFSTOKEN} --pool ${TFSPOOL} --agent ${TFSAGENT}
 set -u # Strict mode on
 . ./run.sh;
