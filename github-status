@@ -3,7 +3,7 @@
 case "$1" in
         pending)
             export status="pending"
-            export description="The build had started"
+            export description="The build has started"
             ;;
 
         failure)
